@@ -1,0 +1,17 @@
+Emoji LS uses those otherwise unused emoji characters in Unicode for giving somve visual feedback in the command prompt.
+
+System specific notes:
+
+Linux
+=====
+An Emoji font must be installed: 
+AndroidEmoji: https://github.com/android/platform_frameworks_base/blob/master/data/fonts/AndroidEmoji.ttf
+Symbola: http://users.teilar.gr/~g1951d/
+
+Mac OS X
+========
+Should work out of the box :)
+
+Windows (mintty/putty)
+======================
+
