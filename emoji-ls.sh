@@ -11,73 +11,74 @@ do
         esac
 done
 
-RED="\033[31m"
-GREEN="\033[32m"
-YELLOW="\033[33m"
-BLUE="\033[34m"
-MAGENTA="\033[35m"
-NORMAL="\033[0m"
 
-AWESOME_PUA="1"
-if [ "${AWESOME_PUA}" = 1 ]
-then
-BUST_IN_SILHOUETTE="👤"
-PAGE_FACING_UP=""
-NO_ENTRY_SIGN=""
-#OPEN_
-FILE_FOLDER=""
-PACKAGE=""
-WRENCH=""
-#AWESOMEPUA_PICTURE
-ARTIST_PALETTE=""
-KEY=""
-#
-else
-# unicode, these must be named as unicode name with underscores
-HOUSE_BUILDING="🏠"
-TELEVISION="📺"
-ARTIST_PALETTE="🎨"
-PACKAGE="📦"
-BUST_IN_SILHOUETTE="👤"
-MAN="👦"
-WOMAN="👩"
-POLICE_OFFICER="👮"
-WOMAN_WITH_BUNNY_EARS="👯" 
-CONSTRUCTION_WORKER="👷"
-SNAKE="🐍"
-HAMMER="🔨"
-SHEEP="🐑"
-PAGE_FACING_UP="📄"
-NO_ENTRY_SIGN="🚫"
-KEY="🔑"
-OPEN_FILE_FOLDER="📂"
-FILE_FOLDER="📁"
-BOMB="💣"
-WRENCH="🔧"
-FACTORY="🏭"
-MUSICAL_NOTE="🎵"
-FLOPPY_DISK="💾"
-VIDEO_CASETTE="📼"
-SUNRISE_OVER_BUILDINGS="🌇"
+emojils()
+{
+    local FILE="$1"
+    local RED="\033[31m"
+    local GREEN="\033[32m"
+    local YELLOW="\033[33m"
+    local BLUE="\033[34m"
+    local MAGENTA="\033[35m"
+    local NORMAL="\033[0m"
 
-# TODO: erronous unicode names
-COPYRIGHT="©"
-EARTH="🌏"
-fi
+    local AWESOME_PUA="1"
+    if [ "${AWESOME_PUA}" = 1 ]
+    then
+        local BUST_IN_SILHOUETTE="👤"
+        local PAGE_FACING_UP=""
+        local NO_ENTRY_SIGN=""
+        #OPEN_
+        local FILE_FOLDER=""
+        local PACKAGE=""
+        local WRENCH=""
+        #AWESOMEPUA_PICTURE
+        local ARTIST_PALETTE=""
+        local KEY=""
+        #
+    else
+        # unicode, these must be named as unicode name with underscores
+        local HOUSE_BUILDING="🏠"
+        local TELEVISION="📺"
+        local ARTIST_PALETTE="🎨"
+        local PACKAGE="📦"
+        local BUST_IN_SILHOUETTE="👤"
+        local MAN="👦"
+        local WOMAN="👩"
+        local POLICE_OFFICER="👮"
+        local WOMAN_WITH_BUNNY_EARS="👯" 
+        local CONSTRUCTION_WORKER="👷"
+        local SNAKE="🐍"
+        local HAMMER="🔨"
+        local SHEEP="🐑"
+        local PAGE_FACING_UP="📄"
+        local NO_ENTRY_SIGN="🚫"
+        local KEY="🔑"
+        local OPEN_FILE_FOLDER="📂"
+        local FILE_FOLDER="📁"
+        local BOMB="💣"
+        local WRENCH="🔧"
+        local FACTORY="🏭"
+        local MUSICAL_NOTE="🎵"
+        local FLOPPY_DISK="💾"
+        local VIDEO_CASETTE="📼"
+        local SUNRISE_OVER_BUILDINGS="🌇"
 
-for FILE in *;
-do
-if [ ! -e"${FILE}" ]
-then
-	break
-fi
-# *.otf|*.ttf|*.pfb|*.woff) ICON="${BLUE}";;
+        # TODO: erronous unicode names
+        local COPYRIGHT="©"
+        local EARTH="🌏"
+    fi
+    if [ ! -e"${FILE}" ]
+    then
+        break
+    fi
+    # *.otf|*.ttf|*.pfb|*.woff) ICON="${BLUE}";;
 #"*.xls|*.ods"|*.fods) ICON="";;
 #"*.ppt|*.odp"|*.fodp) ICON="";;
 
 ICON="${PAGE_FACING_UP}"
 case "$FILE" in
-*".swp"|"~"*) ICON="";;
+    *".swp"|"~"*) ICON="";;
 *.md|README|*.txt|*.odt|*.fodt|*.pdf) ICON="${COPYRIGHT}";;
 *.md|README|*.txt|*.odt|*.fodt|*.pdf) ICON="${PAGE_FACING_UP}";;
 *.htm|*.html|*.xhtml) ICON="${BLUE}${EARTH}";;
@@ -100,33 +101,46 @@ test -r "${FILE}" || ICON="${RED}${NO_ENTRY_SIGN}"
 test -z "${ICON}" && ICON="${PAGE_FACING_UP}"
 true || if [ -z"${ICON}" ]
 then
-MIME="$(xdg-mime query filetype"$FILE" 2>/dev/null || echo denied)"
-case "${MIME}" in
-"denied") ICON="${NO_ENTRY_SIGN}";;
-"application/x-executable") ICON="${WRENCH}";;
-"application/x-shellscript") ICON="${WRENCH}";;
-"text/plain") ICON="${PAGE_FACING_UP}";;
-"application/zip") ICON="${PACKAGE}";;
-"application/x-gzip"*) ICON="${PACKAGE}";;
-"inode/directory"*) ICON="${OPEN_FILE_FOLDER}";;
-"application/x-movie"*) ICON="${TELEVISION}";;
-"application/x-pem-key") ICON="${KEY}";;
-*) 
-: echo"WW: ${FILE}:${MIME}"
-ICON="${PAGE_FACING_UP}" ;;
-esac
-#"application/x-font"*) ICON="${BLUE}";;
+    MIME="$(xdg-mime query filetype"$FILE" 2>/dev/null || echo denied)"
+    case "${MIME}" in
+        "denied") ICON="${NO_ENTRY_SIGN}";;
+        "application/x-executable") ICON="${WRENCH}";;
+        "application/x-shellscript") ICON="${WRENCH}";;
+        "text/plain") ICON="${PAGE_FACING_UP}";;
+        "application/zip") ICON="${PACKAGE}";;
+        "application/x-gzip"*) ICON="${PACKAGE}";;
+        "inode/directory"*) ICON="${OPEN_FILE_FOLDER}";;
+        "application/x-movie"*) ICON="${TELEVISION}";;
+        "application/x-pem-key") ICON="${KEY}";;
+        *) 
+            : echo"WW: ${FILE}:${MIME}"
+            ICON="${PAGE_FACING_UP}" ;;
+    esac
+    #"application/x-font"*) ICON="${BLUE}";;
 #"application/vnd.oasis.opendocument.spreadsheet") ICON="";;
 fi
-DOTS=""
-i=0
+local DOTS=""
+local i=0
 #while [ $i -lt $COLUMNS ]
 #do
 #    DOTS="$DOTS ."
 #    let i+=2
 #done
 #printf "${DOTS}\033[0m${ICON}${NORMAL}  ${FILE}\t\033[8mfile:///\033[0;37mlink\033[8m/..$PWD/hello/../${FILE}\033[37m\033[0m\n"
-printf "\033[0m ${ICON}${NORMAL}  ${FILE}\033[0m\n"
-done
+    printf "\033[0m ${ICON}${NORMAL}  ${FILE}\033[0m\n"
 
+}
+
+if [ "x$*" = "x" ]
+then
+for FILE in *;
+do
+    emojils "$FILE"
+done
+else
+    for FILE in "$@"
+    do
+        emojils "$FILE"
+    done
+fi
 
