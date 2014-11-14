@@ -27,7 +27,7 @@ emojils()
     local AWESOME_PUA="1"
     if [ "${AWESOME_PUA}" = 1 ]
     then
-        local BUST_IN_SILHOUETTE="👤"
+        local BUST_IN_SILHOUETTE=""
         local PAGE_FACING_UP=""
         local NO_ENTRY_SIGN=""
         #OPEN_
@@ -147,7 +147,7 @@ emojils_main ()
             then
                 local CURWD="$PWD"
                 cd "$ARG" 2>/dev/null
-                emojils
+                emojils_main
                 cd "$CURWD"
             else 
                 emojils "$FILE"
