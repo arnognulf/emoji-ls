@@ -1,5 +1,7 @@
 Emoji LS uses those otherwise unused emoji characters in Unicode for giving somve visual feedback in the command prompt.
 
+Also writes a clickable link which works in all modern terminals, where the file can be clicked on to open.
+
 System specific notes:
 
 Linux
