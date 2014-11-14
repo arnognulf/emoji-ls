@@ -13,12 +13,10 @@ if [ "$FALLBACK_LS" == 1 ]
 then
     exec ${LS} "$@"
 fi
-emojils_end()
-{
-    printf "\n"
-}
+
 emojils()
 {
+    local ESC="\033"
     local FILE="$1"
     local RED="\033[31m"
     local GREEN="\033[32m"
@@ -31,10 +29,12 @@ emojils()
     local ICON="x"
     local ICONCOLOR="${NORMAL}"
     local NONBREAKSPACE="_"
+    local FAINT="\033[37m"
 
     local AWESOME_PUA="1"
     if [ "${AWESOME_PUA}" = 1 ]
     then
+        local HOUSE_BUILDING=""
         local BUST_IN_SILHOUETTE=""
         local PAGE_FACING_UP=""
         local NO_ENTRY_SIGN=""
@@ -128,30 +128,22 @@ then
             ICON="${PAGE_FACING_UP}" ;;
     esac
 fi
-local DOTS=""
-local i=0
-#while [ $i -lt $COLUMNS ]
-#do
-#    DOTS="$DOTS ."
-#    let i+=2
-#done
-#printf "${DOTS}\033[0m${ICON}${NORMAL}  ${FILE}\t\033[8mfile:///\033[0;37mlink\033[8m/..$PWD/hello/../${FILE}\033[37m\033[0m\n"
-local ESC="\033"
-ln -sf "$(pwd)" "${EMOJITEMP}/${ICON}_"
-    printf "${ESC}[$((${COLUMNS} - ${#EMOJITEMP} - 6))G${INVISIBLE} file://${EMOJITEMP}/${ICONCOLOR}${ICON}${INVISIBLE}${NONBREAKSPACE}${INVISIBLE}/${NORMAL}${FILE} ${NORMAL}"
+LOC=$(($COLUMNS - ${#EMOJITEMP} - ${#FILE} - 13))
+printf "\033[${LOC}G ${FAINT}(file:/${EMOJITEMP}/x/${NORMAL}${FILE}${FAINT})${NORMAL}"
+printf " \033[0G ${ICON}  ${NORMAL}${FILE}"
+printf "\n"
 }
 emojils_main ()
 {
     local EMOJITEMP=$(mktemp -d)
+    ln -s "$(pwd)" "${EMOJITEMP}/x"
 
     if [ "x$*" = "x" ]
     then
-        #emojils_start
         for FILE in *;
         do
             EMOJITEMP="$EMOJITEMP" emojils "$FILE"
         done
-        emojils_end
     else
         for ARG in "$@"
         do
@@ -162,14 +154,11 @@ emojils_main ()
                 emojils_main
                 cd "$CURWD"
             else 
-                #emojils_start
-                EMOJITEMP="$EMOJITEMP" emojils "$FILE"
-                emojils_end
+                EMOJITEMP="$EMOJITEMP" emojils "$ARG"
             fi
         done
     fi
 }
-
 shopt -s checkwinsize
+printf "\n"
 emojils_main "$@"
-
