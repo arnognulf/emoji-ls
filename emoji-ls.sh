@@ -13,7 +13,10 @@ if [ "$FALLBACK_LS" == 1 ]
 then
     exec ${LS} "$@"
 fi
-
+emojils_end()
+{
+    printf "\n"
+}
 emojils()
 {
     local FILE="$1"
@@ -23,6 +26,11 @@ emojils()
     local BLUE="\033[34m"
     local MAGENTA="\033[35m"
     local NORMAL="\033[0m"
+    local INVISIBLE="\033[37;97m\033[8m"
+    #local INVISIBLE="\033[7m" #reverse
+    local ICON="x"
+    local ICONCOLOR="${NORMAL}"
+    local NONBREAKSPACE="_"
 
     local AWESOME_PUA="1"
     if [ "${AWESOME_PUA}" = 1 ]
@@ -67,41 +75,40 @@ emojils()
         local SUNRISE_OVER_BUILDINGS="🌇"
 
         # TODO: erronous unicode names
-        local COPYRIGHT="©"
+        local COPYRIGHT="©."
         local EARTH="🌏"
     fi
     if [ ! -e"${FILE}" ]
     then
         break
     fi
-    # *.otf|*.ttf|*.pfb|*.woff) ICON="${BLUE}";;
-#"*.xls|*.ods"|*.fods) ICON="";;
-#"*.ppt|*.odp"|*.fodp) ICON="";;
+    # *.otf|*.ttf|*.pfb|*.woff) ICONCOLOR="${BLUE}"; ICON="";;
+    #"*.xls|*.ods"|*.fods) ICON="";;
+    #"*.ppt|*.odp"|*.fodp) ICON="";;
 
-ICON="${PAGE_FACING_UP}"
-case "$FILE" in
-    *".swp"|"~"*) ICON="";;
-*.md|README|*.txt|*.odt|*.fodt|*.pdf) ICON="${COPYRIGHT}";;
-*.md|README|*.txt|*.odt|*.fodt|*.pdf) ICON="${PAGE_FACING_UP}";;
-*.htm|*.html|*.xhtml) ICON="${BLUE}${EARTH}";;
-*.mp3|*.au|*.flac|*.ogg|*.riff|*.wav) ICON="${MUSICAL_NOTE}";;
-*.svg|*.jpg|*.jpeg|*.png|*.gif|*.webp) ICON="${ARTIST_PALETTE}";;
-*.avi|*.mpg|*.webm|*.ogm) ICON="${TELEVISION}";;
-*.bz2|*.gz|*.xz|*.tar|*.zip|*.rar|*.Z|*.cab) ICON="${MAGENTA}${PACKAGE}";;
-id_rsa|id_dsa|id_rsa.pub|id_dsa.pub) ICON="${KEY}";;
-Makefile|makefile) ICON="${FACTORY}";;
-core) ICON="${BOMB}";;
-esac
-test -x "${FILE}" && ICON="${WRENCH}"
-test -d "${FILE}" && ICON="${YELLOW}${FILE_FOLDER}"
-test -d "${FILE}" -a "${PWD}" = "/home" && ICON="${BUST_IN_SILHOUETTE}"
-test -d "${FILE}" -a "${PWD}" = "/Users" && ICON="${BUST_IN_SILHOUETTE}"
-test -d "${FILE}" -a "${PWD}" = "/users" && ICON="${BUST_IN_SILHOUETTE}"
-test -d "${FILE}" -a "${PWD}" = "/media" && ICON="${FLOPPY_DISK}"
-test "${PWD}/${FILE}" = "${HOME}" && ICON="${HOUSE_BUILDING}"
-test -r "${FILE}" || ICON="${RED}${NO_ENTRY_SIGN}"
-test -z "${ICON}" && ICON="${PAGE_FACING_UP}"
-true || if [ -z"${ICON}" ]
+    local ICON="${PAGE_FACING_UP}"
+    case "$FILE" in
+        *".swp"|"~"*) ICON="";;
+        *.md|README|*.txt|*.odt|*.fodt|*.pdf) ICON="${PAGE_FACING_UP}";;
+        *.htm|*.html|*.xhtml) ICON="${BLUE}${EARTH}";;
+        *.mp3|*.au|*.flac|*.ogg|*.riff|*.wav) ICON="${MUSICAL_NOTE}";;
+        *.svg|*.jpg|*.jpeg|*.png|*.gif|*.webp) ICON="${ARTIST_PALETTE}";;
+        *.avi|*.mpg|*.webm|*.ogm) ICON="${TELEVISION}";;
+        *.bz2|*.gz|*.xz|*.tar|*.zip|*.rar|*.Z|*.cab) ICONCOLOR=${MAGENTA}; ICON="${PACKAGE}";;
+        id_rsa|id_dsa|id_rsa.pub|id_dsa.pub) ICON="${KEY}";;
+        Makefile|makefile) ICON="${FACTORY}";;
+        core) ICON="${BOMB}";;
+    esac
+    test -x "${FILE}" && ICON="${WRENCH}"
+    test -d "${FILE}" && ICON="${YELLOW}${FILE_FOLDER}"
+    test -d "${FILE}" -a "${PWD}" = "/home" && ICON="${BUST_IN_SILHOUETTE}"
+    test -d "${FILE}" -a "${PWD}" = "/Users" && ICON="${BUST_IN_SILHOUETTE}"
+    test -d "${FILE}" -a "${PWD}" = "/users" && ICON="${BUST_IN_SILHOUETTE}"
+    test -d "${FILE}" -a "${PWD}" = "/media" && ICON="${FLOPPY_DISK}"
+    test "${PWD}/${FILE}" = "${HOME}" && ICON="${HOUSE_BUILDING}"
+    test -r "${FILE}" || { ICON="${RED}${NO_ENTRY_SIGN}"; ICONCOLOR="${RED}"; }
+    test -z "${ICON}" && ICON="${PAGE_FACING_UP}"
+    true || if [ -z"${ICON}" ]
 then
     MIME="$(xdg-mime query filetype"$FILE" 2>/dev/null || echo denied)"
     case "${MIME}" in
@@ -114,7 +121,7 @@ then
         "inode/directory"*) ICON="${OPEN_FILE_FOLDER}";;
         "application/x-movie"*) ICON="${TELEVISION}";;
         "application/x-pem-key") ICON="${KEY}";;
-        "application/x-font"*) ICON="${BLUE}";;
+        "application/x-font"*) ICONCOLOR=${BLUE}; ICON="";;
         "application/vnd.oasis.opendocument.spreadsheet") ICON="";;
         *) 
             : echo"WW: ${FILE}:${MIME}"
@@ -129,19 +136,22 @@ local i=0
 #    let i+=2
 #done
 #printf "${DOTS}\033[0m${ICON}${NORMAL}  ${FILE}\t\033[8mfile:///\033[0;37mlink\033[8m/..$PWD/hello/../${FILE}\033[37m\033[0m\n"
-    printf "\033[0m ${ICON}${NORMAL}  ${FILE}\033[0m\n"
-
+local ESC="\033"
+ln -sf "$(pwd)" "${EMOJITEMP}/${ICON}_"
+    printf "${ESC}[$((${COLUMNS} - ${#EMOJITEMP} - 6))G${INVISIBLE} file://${EMOJITEMP}/${ICONCOLOR}${ICON}${INVISIBLE}${NONBREAKSPACE}${INVISIBLE}/${NORMAL}${FILE} ${NORMAL}"
 }
 emojils_main ()
 {
-    #EMOJITEMP=$(mktemp -d)
+    local EMOJITEMP=$(mktemp -d)
 
     if [ "x$*" = "x" ]
     then
+        #emojils_start
         for FILE in *;
         do
-            emojils "$FILE"
+            EMOJITEMP="$EMOJITEMP" emojils "$FILE"
         done
+        emojils_end
     else
         for ARG in "$@"
         do
@@ -152,11 +162,14 @@ emojils_main ()
                 emojils_main
                 cd "$CURWD"
             else 
-                emojils "$FILE"
+                #emojils_start
+                EMOJITEMP="$EMOJITEMP" emojils "$FILE"
+                emojils_end
             fi
         done
     fi
 }
 
+shopt -s checkwinsize
 emojils_main "$@"
 
