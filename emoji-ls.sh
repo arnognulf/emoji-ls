@@ -134,6 +134,8 @@ local i=0
 }
 emojils_main ()
 {
+    #EMOJITEMP=$(mktemp -d)
+
     if [ "x$*" = "x" ]
     then
         for FILE in *;
