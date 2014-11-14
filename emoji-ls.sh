@@ -1,16 +1,18 @@
 #!/bin/bash
 LS="$(type -p ls)"
 
-AUTOGLOB=true
+FALLBACK_LS=0
+
 for ARG in "$@"
 do
-    AUTOGLOB=false
-
-	case "${ARG}" in
-        -*) exec ${LS} "$@"; exit 0;;
-        esac
+    case "$ARG" in
+        -*) FALLBACK_LS=1;;
+    esac
 done
-
+if [ "$FALLBACK_LS" == 1 ]
+then
+    exec ${LS} "$@"
+fi
 
 emojils()
 {
@@ -112,12 +114,12 @@ then
         "inode/directory"*) ICON="${OPEN_FILE_FOLDER}";;
         "application/x-movie"*) ICON="${TELEVISION}";;
         "application/x-pem-key") ICON="${KEY}";;
+        "application/x-font"*) ICON="${BLUE}";;
+        "application/vnd.oasis.opendocument.spreadsheet") ICON="";;
         *) 
             : echo"WW: ${FILE}:${MIME}"
             ICON="${PAGE_FACING_UP}" ;;
     esac
-    #"application/x-font"*) ICON="${BLUE}";;
-#"application/vnd.oasis.opendocument.spreadsheet") ICON="";;
 fi
 local DOTS=""
 local i=0
@@ -130,17 +132,29 @@ local i=0
     printf "\033[0m ${ICON}${NORMAL}  ${FILE}\033[0m\n"
 
 }
+emojils_main ()
+{
+    if [ "x$*" = "x" ]
+    then
+        for FILE in *;
+        do
+            emojils "$FILE"
+        done
+    else
+        for ARG in "$@"
+        do
+            if [ -d "$ARG" -a -x "$ARG" ]
+            then
+                local CURWD="$PWD"
+                cd "$ARG" 2>/dev/null
+                emojils
+                cd "$CURWD"
+            else 
+                emojils "$FILE"
+            fi
+        done
+    fi
+}
 
-if [ "x$*" = "x" ]
-then
-for FILE in *;
-do
-    emojils "$FILE"
-done
-else
-    for FILE in "$@"
-    do
-        emojils "$FILE"
-    done
-fi
+emojils_main "$@"
 
