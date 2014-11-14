@@ -129,14 +129,22 @@ then
     esac
 fi
 LOC=$(($COLUMNS - ${#EMOJITEMP} - ${#FILE} - 13))
-printf "\033[${LOC}G ${FAINT}(file:/${EMOJITEMP}/x/${NORMAL}${FILE}${FAINT})${NORMAL}"
-printf " \033[0G ${ICON}  ${NORMAL}${FILE}"
+printf "\033[${LOC}G ${FAINT}(file://${EMOJITEMP}/x/${NORMAL}${FILE}${FAINT})${NORMAL}"
+printf " \033[0G ${ICON}  ${NORMAL}${FILE}  "
 printf "\n"
 }
+
 emojils_main ()
 {
+    if [ -z ${NO_RC} ]
+    then
+        :
+    else
+        . "$HOME/.emojils.sh"
+        rm "$HOME/.emojils.sh"
+    fi
     local EMOJITEMP=$(mktemp -d)
-    ln -s "$(pwd)" "${EMOJITEMP}/x"
+    ln -s "$(pwd)" "${EMOJITEMP}/_"
 
     if [ "x$*" = "x" ]
     then
@@ -151,14 +159,16 @@ emojils_main ()
             then
                 local CURWD="$PWD"
                 cd "$ARG" 2>/dev/null
-                emojils_main
+                NO_RC=1 emojils_main
                 cd "$CURWD"
             else 
                 EMOJITEMP="$EMOJITEMP" emojils "$ARG"
             fi
         done
     fi
+    echo "rm -rf \"${EMOJITEMP}\"" >> $HOME/.emojils.sh
 }
 shopt -s checkwinsize
 printf "\n"
 emojils_main "$@"
+
