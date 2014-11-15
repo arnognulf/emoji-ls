@@ -128,8 +128,9 @@ then
             ICON="${PAGE_FACING_UP}" ;;
     esac
 fi
+FILE=${FILE/ /%%20}
 LOC=$(($COLUMNS - ${#EMOJITEMP} - ${#FILE} - 13))
-printf "\033[${LOC}G ${FAINT}(file://${EMOJITEMP}/x/${NORMAL}${FILE}${FAINT})${NORMAL}"
+printf "\033[${LOC}G ${FAINT}(file://${EMOJITEMP}/_/${NORMAL}${FILE}${FAINT})${NORMAL}"
 printf " \033[0G ${ICON}  ${NORMAL}${FILE}  "
 printf "\n"
 }
@@ -143,7 +144,11 @@ emojils_main ()
         . "$HOME/.emojils.sh"
         rm "$HOME/.emojils.sh"
     fi
-    local EMOJITEMP=$(mktemp -d)
+    if [ -z "${TMPDIR}" ]
+    then
+        TMPDIR="/tmp"
+    fi
+    local EMOJITEMP=$(TMPDIR=$TMPDIR mktemp -d ${TMPDIR}/l.XXX || mktemp -d -t 'mytmpdir')
     ln -s "$(pwd)" "${EMOJITEMP}/_"
 
     if [ "x$*" = "x" ]
