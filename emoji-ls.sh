@@ -148,7 +148,7 @@ emojils_main ()
     then
         TMPDIR="/tmp"
     fi
-    local EMOJITEMP=$(TMPDIR=$TMPDIR mktemp -d ${TMPDIR}/l.XXX || mktemp -d -t 'mytmpdir')
+    local EMOJITEMP=$(TMPDIR=$TMPDIR mktemp -d ${TMPDIR}/XXX || mktemp -d -t 'mytmpdir')
     ln -s "$(pwd)" "${EMOJITEMP}/_"
 
     if [ "x$*" = "x" ]
