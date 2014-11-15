@@ -34,6 +34,7 @@ emojils()
     local AWESOME_PUA="1"
     if [ "${AWESOME_PUA}" = 1 ]
     then
+        local TRASHCAN=""
         local HOUSE_BUILDING=""
         local BUST_IN_SILHOUETTE=""
         local PAGE_FACING_UP=""
@@ -45,6 +46,13 @@ emojils()
         #AWESOMEPUA_PICTURE
         local ARTIST_PALETTE=""
         local KEY=""
+        local FILE_PDF=""
+        local FILE_ZIP=""
+        local FILE_CODE=""
+        local FILE_IMAGE=""
+        local FILE_EXCEL=""
+        local FILE_WORD=""
+        local FILE_MOVIE=""
         #
     else
         # unicode, these must be named as unicode name with underscores
@@ -73,6 +81,7 @@ emojils()
         local FLOPPY_DISK="💾"
         local VIDEO_CASETTE="📼"
         local SUNRISE_OVER_BUILDINGS="🌇"
+        local EARTH=""
 
         # TODO: erronous unicode names
         local COPYRIGHT="©."
@@ -82,21 +91,23 @@ emojils()
     then
         break
     fi
-    # *.otf|*.ttf|*.pfb|*.woff) ICONCOLOR="${BLUE}"; ICON="";;
-    #"*.xls|*.ods"|*.fods) ICON="";;
-    #"*.ppt|*.odp"|*.fodp) ICON="";;
+
+    DEFAULT_ICON="${PAGE_FACING_UP}"
+    DEFAULT_DIR_ICON="${PAGE_FACING_UP}"
 
     local ICON="${PAGE_FACING_UP}"
-    case "$FILE" in
-        *".swp"|"~"*) ICON="";;
-        *.md|README|*.txt|*.odt|*.fodt|*.pdf) ICON="${PAGE_FACING_UP}";;
+    #LOWER="$(echo $FILE|tr '[:upper:]' '[:lower:]')"
+    case "${FILE,,}" in
+        *".swp"|"~"*) ICON="${TRASHCAN}";;
+        *.md|readme|*.txt|*.odt|*.fodt|*.pdf) ICON="${PAGE_FACING_UP}";;
+        "*.xls|*.ods"|*.fods) ICON="";;
         *.htm|*.html|*.xhtml) ICON="${BLUE}${EARTH}";;
         *.mp3|*.au|*.flac|*.ogg|*.riff|*.wav) ICON="${MUSICAL_NOTE}";;
         *.svg|*.jpg|*.jpeg|*.png|*.gif|*.webp) ICON="${ARTIST_PALETTE}";;
         *.avi|*.mpg|*.webm|*.ogm) ICON="${TELEVISION}";;
-        *.bz2|*.gz|*.xz|*.tar|*.zip|*.rar|*.Z|*.cab) ICONCOLOR=${MAGENTA}; ICON="${PACKAGE}";;
+        *.bz2|*.gz|*.xz|*.tar|*.zip|*.rar|*.z|*.cab) ICONCOLOR=${MAGENTA}; ICON="${PACKAGE}";;
         id_rsa|id_dsa|id_rsa.pub|id_dsa.pub) ICON="${KEY}";;
-        Makefile|makefile) ICON="${FACTORY}";;
+        makefile) ICON="${FACTORY}";;
         core) ICON="${BOMB}";;
     esac
     test -x "${FILE}" && ICON="${WRENCH}"
@@ -128,9 +139,10 @@ then
             ICON="${PAGE_FACING_UP}" ;;
     esac
 fi
-FILE=${FILE/ /%%20}
-LOC=$(($COLUMNS - ${#EMOJITEMP} - ${#FILE} - 13))
-printf "\033[${LOC}G ${FAINT}(file://${EMOJITEMP}/_/${NORMAL}${FILE}${FAINT})${NORMAL}"
+LINKFILE=${FILE/ /${FAINT}%%20${NORMAL}}
+LINKFILENOCOLOR=${FILE/ /%%20}
+LOC=$(($COLUMNS - ${#EMOJITEMP} - ${#LINKFILENOCOLOR} - 13))
+printf "\033[${LOC}G ${FAINT}(file://${EMOJITEMP}/_/${NORMAL}${LINKFILE}${FAINT})${NORMAL}"
 printf " \033[0G ${ICON}  ${NORMAL}${FILE}  "
 printf "\n"
 }
@@ -139,8 +151,6 @@ emojils_main ()
 {
     if [ -z ${NO_RC} ]
     then
-        :
-    else
         . "$HOME/.emojils.sh"
         rm "$HOME/.emojils.sh"
     fi
@@ -148,7 +158,7 @@ emojils_main ()
     then
         TMPDIR="/tmp"
     fi
-    local EMOJITEMP=$(TMPDIR=$TMPDIR mktemp -d ${TMPDIR}/XXX || mktemp -d -t 'mytmpdir')
+    local EMOJITEMP=$(TMPDIR=$TMPDIR mktemp -d ${TMPDIR}/_XXX || mktemp -d -t 'mytmpdir')
     ln -s "$(pwd)" "${EMOJITEMP}/_"
 
     if [ "x$*" = "x" ]
