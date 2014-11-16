@@ -465,7 +465,6 @@
   fa-suitcase [&#xf0f2;]
   fa-sun-o [&#xf185;]
   fa-superscript [&#xf12b;]
-  fa-support (al      &#xf1cd;]
   fa-support (alias) [&#xf1cd;]
   fa-tablet [&#xf10a;]
   fa-table [&#xf0ce;]
