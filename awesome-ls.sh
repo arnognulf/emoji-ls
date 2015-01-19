@@ -47,7 +47,7 @@ emojils()
     local BRIGHTWHITE="${ESC}[97m"
 
     local AWESOME_PUA="1"
-    case "${TEMRNAME}" in
+    case "${TERMNAME}" in
     gnome-terminal|konsole)
         local DIR_HOME=""
         local DIR_OTHERUSER=""

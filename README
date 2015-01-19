@@ -2,18 +2,7 @@ Emoji LS uses those otherwise unused emoji characters in Unicode for giving somv
 
 Also writes a clickable link which works in all modern terminals, where the file can be clicked on to open.
 
-System specific notes:
+Install font awesome:
+http://fortawesome.github.io/Font-Awesome/
 
-Linux
-=====
-An Emoji font must be installed: 
-AndroidEmoji: https://github.com/android/platform_frameworks_base/blob/master/data/fonts/AndroidEmoji.ttf
-Symbola: http://users.teilar.gr/~g1951d/
-
-Mac OS X
-========
-Should work out of the box :)
-
-Windows (mintty/putty)
-======================
 
